@@ -78,6 +78,7 @@ public var fusumaCameraTitle     = "Photo"
 public var fusumaVideoTitle      = "Video"
 public var fusumaTitleFont       = UIFont(name: "AvenirNext-DemiBold", size: 15)
 public var fusumaBorderEnabled: Bool = false
+public var fusumaHideStatusBar: Bool = true
 
 public var autoDismiss: Bool = true
 
@@ -306,6 +307,9 @@ public struct ImageMetadata {
     
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if fusumaHideStatusBar {
+            hideStatusBar(status: true)
+        }
     }
     
     override public func viewDidAppear(_ animated: Bool) {
@@ -337,10 +341,14 @@ public struct ImageMetadata {
         
         super.viewWillDisappear(animated)
         self.stopAll()
+        if fusumaHideStatusBar {
+            // restore to default; Since fusumaHideStatusBar will get hidden in the viewWillAppear
+            hideStatusBar(status: false)
+        }
     }
     
     override public var prefersStatusBarHidden : Bool {
-        
+
         return true
     }
     
@@ -501,6 +509,12 @@ public struct ImageMetadata {
                 }
             }
         }
+    }
+    
+    /// Since prefersStatusBarHidden is not taking effect for some reason. Maybe caused by iOS version?
+    /// Using in iOS 11, it is not taking effect.
+    private func hideStatusBar(status: Bool) -> Void {
+       UIApplication.shared.isStatusBarHidden = status
     }
 }
 
